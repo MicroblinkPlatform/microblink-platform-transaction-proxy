@@ -1,0 +1,8 @@
+/src/.vs/Microblink.Platform.Proxy.Sample/copilot*
+*.vsidx
+*.dtbcache.v2
+.vs*
+*Development.json
+/src/Proxy.Sample/bin/*
+/src/Proxy.Sample/obj/*
+*.csproj.user
