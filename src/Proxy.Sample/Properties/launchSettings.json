@@ -7,7 +7,7 @@
             "DOTNET_GCDynamicAdaptationMode": "1",
             "ASPNETCORE_ENVIRONMENT": "Development"
         },
-        "applicationUrl": "" 
+        "applicationUrl": "http://localhost:2105" 
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
