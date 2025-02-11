@@ -13,7 +13,6 @@ namespace Microblink.Platform.Proxy.Sample;
 
 public class AuthService : IAuthService
 {
-    private readonly IDistributedCache? _cache;
     private readonly IHttpClientFactory _clientFactory;
     private readonly ILogger<AuthService> _logger;
     private readonly ApiClientCredentials _options;
@@ -35,7 +34,6 @@ public class AuthService : IAuthService
         _logger = logger;
         _options = options.Value;
         _clientFactory = clientFactory;
-        _cache = tokenCache;
     }
 
     public Uri Address => _options.Address;
@@ -47,7 +45,12 @@ public class AuthService : IAuthService
         var token = await GetClientCredentialToken(ct);
 
         if (token == null || token.AccessToken == null)
-            throw new Exception("Failed to obtain access token. Verify service account configuration!");
+        {
+            var exceptionMessage = "Failed to obtain access token. Verify service account configuration!";
+            _logger.LogError(exceptionMessage);
+            throw new Exception(exceptionMessage);
+        }
+            
 
         return token;
     }

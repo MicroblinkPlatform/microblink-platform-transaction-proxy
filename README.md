@@ -28,8 +28,8 @@ Body
 ```json
 {
     "workflowId": "67a651aa5782356731276b99d", // Use your workflowId from Microblink Platform Dashboard
-    "platform": "browser", 
-    "sdkVersion": "0.1.0", 
+    "platform": "browser",    // Example for browser SDK
+    "sdkVersion": "0.1.0",    // Must match workflow SDK version for provided workflowId
     "formFields": null
 }
 ```
@@ -79,8 +79,8 @@ Microblink Platform Transaction Proxy configuration is done by adding configurat
 
 # Provisioning
 **Address** - depends on the region where Organization is hosted. 
-* US-East - https://api.us-east.platform.microblink.com/agent/api/
-* Brazil  - https://api.br.platform.microblink.com/agent/api/
+* US-East - https://api.us-east.platform.microblink.com/agent/
+* Brazil  - https://api.br.platform.microblink.com/agent/
 
 **ClientId** - provided by Microblink Platform Dasbhboard
 
