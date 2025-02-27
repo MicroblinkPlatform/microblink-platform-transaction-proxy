@@ -10,14 +10,14 @@
         "applicationUrl": "http://localhost:2105" 
     },
     "Container (Dockerfile)": {
-      "commandName": "Docker",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "8080"
-      },
-      "applicationUrl": "", 
-      "publishAllPorts": true,
-      "useSSL": false
+        "commandName": "Docker",
+        "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+        "environmentVariables": {
+            "ASPNETCORE_HTTP_PORTS": "8080"
+        },
+        "applicationUrl": "",
+        "publishAllPorts": true,
+        "useSSL": false
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"

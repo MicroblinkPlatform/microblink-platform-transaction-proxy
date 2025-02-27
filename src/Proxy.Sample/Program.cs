@@ -19,7 +19,8 @@ public class Program
 
         builder.Services.AddOptions<ApiClientCredentials>()
             .Bind(builder.Configuration.GetSection("ApiClientCredentials"))
-            .ValidateDataAnnotations();
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         builder.Services.AddSingleton<IValidateOptions<ApiClientCredentials>, ApiClientCredentials>();
 
