@@ -23,7 +23,7 @@ Microblink Platform Transaction Proxy is lightweight .NET 9 service for secure a
 # Provisioning
 - **Address** - depends on the region where Organization is hosted
 
-![alt text](image-8.png)
+![alt text](image-resources/image-8.png)
 
 ## Address Table 
 |    Region     |                   Value                                 |   Type   |
@@ -32,16 +32,13 @@ Microblink Platform Transaction Proxy is lightweight .NET 9 service for secure a
 |     `Brazil`  |  `https://api.br.platform.microblink.com/agent/`        | `string` |
 
 
-<!-- - US-East - https://api.us-east.platform.microblink.com/agent/
-- Brazil - https://api.br.platform.microblink.com/agent/ -->
-
 ## Client credentials
 
 Generated at Microblink Platform Dashboard 
 
 - **MANDATORY** role for PROXY - **Transaction start**
 
-![alt text](image-9.png)
+![alt text](image-resources/image-9.png)
 
 - **ClientId** - generated on image above
 - **ClientSecret** - generated on image above
@@ -67,11 +64,11 @@ Microblink Platform Transaction Proxy configuration is done by adding configurat
 
 2. Run the service from visual studio under **Project** settings
 
-![alt text](image-1.png)
+![alt text](image-resources/image-1.png)
 
 3. Service should be available from postman on port which was exposed
 
-![alt text](image-2.png)
+![alt text](image-resources/image-10.png)
 
 4. Proceed to steps [below](#start-transaction) to initiate transaction
 ---
@@ -80,15 +77,15 @@ Microblink Platform Transaction Proxy configuration is done by adding configurat
 
 1. Run the service from visual studio as Container (Dockerfile)
 
-   ![alt text](image.png)
+   ![alt text](image-resources/image.png)
 
 2. Find where container is running in Visual Studio containers tab and copy host port
 
-![alt text](image-4.png)
+![alt text](image-resources/image-4.png)
 
 3. Prepare request for provided port
 
-![alt text](image-5.png)
+![alt text](image-resources/image-5.png)
 
 4. Proceed to steps [below](#start-transaction) to initiate transaction
 
@@ -98,7 +95,7 @@ Microblink Platform Transaction Proxy configuration is done by adding configurat
 
 1. Open powershell and navigate to the root of the project 
 
-![alt text](image-3.png)
+![alt text](image-resources/image-3.png)
 
 2. Execute powershell script to start proxy
 
@@ -114,13 +111,13 @@ Microblink Platform Transaction Proxy configuration is done by adding configurat
 ```powershell
 > docker ps
 ```
-![alt text](image-7.png)
+![alt text](image-resources/image-7.png)
 
 4. On image above it is seen exposed docker port **32805**. 
 
 5. Prepare request for provided port
 
-![alt text](image-5.png)
+![alt text](image-resources/image-5.png)
 
 
 3. Excute postman request with setting shown below.
