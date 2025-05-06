@@ -19,7 +19,7 @@ public class AuthService : IAuthService
 
     const string IdHttpClientName = "TokenManagerClient:Idp";
     const string Audience = "idv-api";
-    const string Authority = "https://mb-idv-prod.us.auth0.com";
+    const string Authority = "https://account.platform.microblink.com";
 
     private static readonly ConcurrentDictionary<string, IDiscoveryCache> _discoveryCaches = [];
 
