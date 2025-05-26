@@ -61,4 +61,31 @@ internal static class ServiceConfiguration
 
         return builder;
     }
+
+    public static WebApplicationBuilder UseIdvHost(this WebApplicationBuilder builder)
+    {
+        LogBoot("Configuring kestrel and limits");
+
+        builder.WebHost.ConfigureKestrel((context, serverOptions) =>
+        {
+            serverOptions.AddServerHeader = false;
+            serverOptions.Limits.MaxRequestBodySize = 4096;
+        });
+
+        builder.WebHost.ConfigureKestrel((context, serverOptions) =>
+        {
+            serverOptions.AddServerHeader = false;
+            serverOptions.Limits.MaxRequestBodySize = long.MaxValue;
+        });
+
+        builder.Services.Configure<FormOptions>(options =>
+        {
+            options.ValueCountLimit = 1024;
+            options.ValueLengthLimit = int.MaxValue;
+            options.MultipartBodyLengthLimit = long.MaxValue;
+            options.MemoryBufferThreshold = int.MaxValue;
+        });
+
+        return builder;
+    }
 }
