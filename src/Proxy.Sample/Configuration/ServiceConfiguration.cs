@@ -1,5 +1,8 @@
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -64,7 +67,6 @@ internal static class ServiceConfiguration
 
     public static WebApplicationBuilder UseIdvHost(this WebApplicationBuilder builder)
     {
-        LogBoot("Configuring kestrel and limits");
 
         builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
