@@ -1,3 +1,5 @@
+using Microblink.Proxy.Sample.Model;
+
 namespace Microblink.Platform.Proxy.Sample;
 
 public record class WorkflowInfoModel
@@ -10,4 +12,9 @@ public record class WorkflowInfoModel
     public required string CurrentStep { get; set; }
     public required int CurrentStepRetryCount { get; set; }
     public required int CurrentStepExecutionIndex { get; set; }
+
+    public required WorkflowStepInfoModel[] Steps { get; set; }
+    public required int CurrentStepId { get; set; }
+    public required int[] PendingStepIds { get; set; }
+    public required int[] CompletedStepIds { get; set; }
 }
