@@ -97,7 +97,7 @@ In your browser's developer tools, under the network tab, you should see the res
 
 ### Using `curl`
 
-If you just want to verify that the proxy is operational using `curl`, follow [this tutorial](https://platform.docs.microblink.com/api/transaction-api), but instead of contacting the Agent API directly, contact your proxy at `http://localhost/transaction`.
+If you just want to verify that the proxy is operational using `curl`, follow [this tutorial](https://platform.docs.microblink.com/api/transaction-api), but instead of contacting the Agent API directly, contact your proxy at `http://localhost:8081/transaction`.
 
 Create a `request_body.json` file. Here's an example one:
 
