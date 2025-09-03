@@ -2,188 +2,158 @@
   <img src="https://raw.githubusercontent.com/wiki/blinkid/blinkid-android/images/logo-microblink.png" alt="Microblink" title="Microblink">
 </p>
 
-# Microblink Platform Transaction Proxy
+# Microblink Platform transaction proxy
 
-Microblink Platform Transaction Proxy is lightweight .NET 9 service for secure and seamless authentication with Microblink Platform. 
+This repository contains a lightweight .NET 9 proxy service packaged as an OCI-compliant container. 
 
-## Table Of Contents
+This README covers local testing and development, and doesn't include deployment to external hosts.
 
-- [Provisioning](#provisioning)
-- [Configuration](#configuration)
-- [Proxy Test Run](#proxy-test-run)
-    - [Run the service from VS](#scenario-1---run-the-service-from-visual-studio)
-    - [Run the container from VS](#scenario-2---run-the-container-from-visual-studio)
-    - [Run the docker container](#scenario-3---run-docker-container)
-- [Start Transaction](#start-transaction)
-- [Installation](#installation)
+**Note**: This proxy service is for demonstration purposes only and should not be used in production environments.
 
----
+## Prerequisites
 
+To successfully run the proxy, you need:
 
-# Provisioning
-- **Address** - depends on the region where Organization is hosted
+1. A [Microblink Platform account and API credentials](https://platform.docs.microblink.com/account-setup/). After this step, you should know your region, as well as your client ID and client secret.
+2. A [workflow](https://platform.docs.microblink.com/build-workflow/).
+3. An [SDK](https://platform.docs.microblink.com/sdk-integration/) with which you can test the workflow. Alternatively, to just check if the proxy works, you can skip this step and test it manually with `curl` or a similar tool.
 
-![alt text](image-resources/image-8.png)
+You'll also need a tool to create OCI images and containers, such as Docker or Podman. We'll use the `podman` CLI tool in these instructions, but the commands would also work with `docker` CLI.
 
-## Address Table 
-|    Region     |                   Value                                 |   Type   |
-| ------------- | ------------------------------------------------------- | -------- |
-|   `US - East` |  `https://api.us-east.platform.microblink.com/agent/`   | `string` |
-|     `Brazil`  |  `https://api.br.platform.microblink.com/agent/`        | `string` |
-
-
-## Client credentials
-
-Generated at Microblink Platform Dashboard 
-
-- **MANDATORY** role for PROXY - **Transaction start**
-
-![alt text](image-resources/image-9.png)
-
-- **ClientId** - generated on image above
-- **ClientSecret** - generated on image above
-
----
+Follow the links above to set everything up first, then clone this repository and configure settings.
 
 ## Configuration
 
-Microblink Platform Transaction Proxy configuration is done by adding configuration values in appsettings.json
-
-| Property       | Type     | Required | Example                               | Description           |
-| -------------- | -------- | -------- | ------------------------------------- | --------------------- |
-| `Address`      | `string` | Yes      | `https://api.*.microblink.com/agent/` | Region specific URL   |
-| `ClientId`     | `string` | Yes      | `QRl1pF4o1GQUPhfNaLjptL2PV7FCk2`      | Generate on Dashboard |
-| `ClientSecret` | `string` | Yes      | `5eVolxANEx83732B5WFJgepzC2ovkh`      | Generate on Dashboard |
-
-## Proxy Test Run
-
-### Scenario 1 - Run the service from Visual Studio
-
-1. Change **launchSettings.json** value for **applicationUrl** to match the url and port for your needs 
-    -  In sample it was set to  "applicationUrl": "http://localhost:2105" 
-
-2. Run the service from visual studio under **Project** settings
-
-![alt text](image-resources/image-1.png)
-
-3. Service should be available from postman on port which was exposed
-
-![alt text](image-resources/image-10.png)
-
-4. Proceed to steps [below](#start-transaction) to initiate transaction
----
-
-### Scenario 2 - Run the container from Visual Studio
-
-1. Run the service from visual studio as Container (Dockerfile)
-
-   ![alt text](image-resources/image.png)
-
-2. Find where container is running in Visual Studio containers tab and copy host port
-
-![alt text](image-resources/image-4.png)
-
-3. Prepare request for provided port
-
-![alt text](image-resources/image-5.png)
-
-4. Proceed to steps [below](#start-transaction) to initiate transaction
-
----
-
-### Scenario 3 - Run docker container
-
-1. Open powershell and navigate to the root of the project 
-
-![alt text](image-resources/image-3.png)
-
-2. Execute powershell script to start proxy
-
-```powershell
-> docker build -t proxy.sample:rel . # Building the image for run
-
-# After the build is done execute
-> docker run -p 2105:8080 proxy.sample:rel # Mapping host port 2105 to container 8080
-```
-
-3. Execute powershell script
-
-```powershell
-> docker ps
-```
-![alt text](image-resources/image-7.png)
-
-4. On image above it is seen exposed docker port **32805**. 
-
-5. Prepare request for provided port
-
-![alt text](image-resources/image-5.png)
-
-
-3. Excute postman request with setting shown below.
-
-
----
-## Start Transaction
-
-1. Pull the code from repository
-
-2. Provide [Configuration](#configuration) values from Microblink Platform Dasbhboard - create API keys with **transaction.execute** permission.
-
-3. Proxy API test - start the service and call it from postman
-
-URL
-
-```http
-POST http://localhost:2105/transaction
-# Change url to match one which you have set up in launchsettings.json
-Content-Type: application/json
-```
-
-Body
+Configure the proxy in `src/Proxy.Sample/appsettings.json`, under `ApiClientCredentials`:
 
 ```json
 {
-  "workflowId": "67a651aa5782356731276b99d", // Use your workflowId from Microblink Platform Dashboard
-  "platform": "browser", // Example for browser SDK
-  "sdkVersion": "0.1.0", // Must match workflow SDK version for provided workflowId
-  "formFields": null
+    "ApiClientCredentials": {
+        "Address": "https://api.us-east.platform.microblink.com/agent/",
+        "ClientId": "example-client-id",
+        "ClientSecret": "example-client-secret"
+```
+
+- The `Address` field should match the region you picked when creating your organization. Find the root address for your region [here](https://platform.docs.microblink.com/api/#regions). Don't forget to append `/agent`!
+- The `ClientId` and `ClientSecret` values should match the values you got when you created API credentials.
+
+### CORS configuration
+
+If you're testing this with a browser SDK, you'll also need to configure CORS headers, otherwise you won't be able to initiate a transaction. 
+
+In `src/Proxy.Sample/Program.cs`, add the following two lines:
+
+```cs
+builder.Services.AddCors();
+app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); 
+```
+
+So that the final portion of Program.cs looks like this:
+
+```cs
+        builder.Services.AddTransient<IAgentService,AgentService>();
+        builder.Services.AddTransient<IAuthService, AuthService>();
+        builder.Services.AddCors();
+        var app = builder.Build();
+
+        app.UsePathBase(builder.Configuration.GetValue<string>("ASPNETCORE_BASEPATH"));
+
+        app.UseExceptionHandler();
+        app.UseStatusCodePages();
+        app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); 
+        app.ConfigureRoutes();
+
+        app.Run();
+    }
+```
+
+This is not necessary if you're not using the browser SDK to test.
+
+## Image and container
+
+In the root of the repository, create an image from the Dockerfile: 
+
+```bash
+podman build --tag transaction-proxy src
+```
+
+Then, run the container. Map your machine's port 8081 to the container's port 8080:
+
+```bash
+podman run --publish 8081:8080 transaction-proxy
+```
+
+This makes the container available on localhost:8081 and ready to start proxying SDK requests.
+
+## Testing the proxy
+
+### Using the web SDK
+
+To fully (locally) test the functionality of the proxy, the best way is to run one of our [example web apps](https://github.com/MicroblinkPlatform/microblink-platform-browser-sdk/tree/main/example-react). This allows you to test different capabilities.
+
+Follow the instructions in the README for that repository, then pass the workflow ID and the proxy URL (`http://localhost:8081/transaction).
+
+In your browser's developer tools, under the network tab, you should see the response from the proxy containing the full Agent API response.
+
+### Using `curl`
+
+If you just want to verify that the proxy is operational using `curl`, follow [this tutorial](https://platform.docs.microblink.com/api/transaction-api), but instead of contacting the Agent API directly, contact your proxy at `http://localhost:8081/transaction`.
+
+Create a `request_body.json` file. Here's an example one:
+
+```json
+{
+  "workflowId": "6870ca44335606082bb4bf90",
+  "platform": "browser",
+  "sdkVersion": "1.4.0",
+  "consent": {
+    "userId": "unique-user-id",
+    "givenOn": "2025-08-29T09:00:00",
+    "isProcessingStoringAllowed": true,
+    "isTrainingAllowed": true
+  }
 }
 ```
 
-4. Response will return populated data
+Change the contents to match your workflow. If unsure, see the tutorial linked above.
 
-```json
+Then, run the `curl` command:
+
+```bash
+curl --url http://localhost:8081/transaction --json @request_body.json
+```
+
+The proxy service will send your request to the Agent API and return data back:
+
+```
 {
-  "transactionId": "",
-  "workflowId": "67a651aa5782356731276b99d",
-  "workflowVersionId": "",
-  "organizationId": "",
-  "ephemeralKey": "",
-  "authorization": "",
+  "transactionId": "0168b84a94eb57fb65879eb3f5",
+  "workflowId": "6870ca44335606082bb4bf90",
+  "workflowVersionId": "68b58647b84a9097911b3f30",
+  "organizationId": "66d99fa9edc165df54072f8c",
+  "ephemeralKey": "r3RvKMXepniMAX2HV8MRLZH3M8gm6sD..."
+  "authorization": "MDE2OGI4NGE5NGViNTdmYjY1ODc5Zs..."
   "workflowInfo": {
-    "stepCount": 5,
-    "interactiveStepCount": 2,
+    "stepCount": 2,
+    "interactiveStepCount": 0,
     "hasConditionalInteractiveStep": false,
-    "interactiveSteps": [
-      // Depends on workflow setup
-      "DocVer",
-      "FaceMatch"
-    ],
+    "interactiveSteps": [],
     "completedInteractiveSteps": [],
-    "currentStep": "Start",
+    "currentStep": "End",
     "currentStepRetryCount": 0,
-    "currentStepExecutionIndex": 1
+    "currentStepExecutionIndex": 1,
+    "steps": [],
+    "currentStepId": 2,
+    "pendingStepIds": [],
+    "completedStepIds": []
   },
-  "createdOn": "",
-  "modifiedOn": "",
-  "processingStatus": "Pending",
+  "createdOn": "2025-09-03T14:03:00.7029384Z",
+  "modifiedOn": "2025-09-03T14:03:00.707429Z",
+  "processingStatus": "InProgress",
   "warnings": [],
-  "edgeApiUrl": "https://api.*.microblink.com/edge"
+  "edgeApiUrl": "https://api.us-east.platform.microblink.com/edge"
 }
 ```
 
-5. At this point Proxy API works. Expose the port to ensure your service is available outside of the server and provide SDKs with your new URL.
-
----
+This confirms that the proxy is operational, that it has successfully contacted the Agent API, and has returned information on where to continue with the transaction. (All of this happens behind the scenes when using an SDK.)
 
