@@ -91,7 +91,7 @@ This makes the container available on localhost:8081 and ready to start proxying
 
 To fully (locally) test the functionality of the proxy, the best way is to run one of our [example web apps](https://github.com/MicroblinkPlatform/microblink-platform-browser-sdk/tree/main/example-react). This allows you to test different capabilities.
 
-Follow the instructions in the README for that repository, then pass the workflow ID and the proxy URL (`http://localhost:8081/transaction).
+Follow the instructions in the README for that repository, then pass the workflow ID and the proxy URL (`http://localhost:8081/transaction`).
 
 In your browser's developer tools, under the network tab, you should see the response from the proxy containing the full Agent API response.
 
@@ -125,7 +125,7 @@ curl --url http://localhost:8081/transaction --json @request_body.json
 
 The proxy service will send your request to the Agent API and return data back:
 
-```
+```json
 {
   "transactionId": "0168b84a94eb57fb65879eb3f5",
   "workflowId": "6870ca44335606082bb4bf90",
