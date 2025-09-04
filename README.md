@@ -34,7 +34,9 @@ Configure the proxy in `src/Proxy.Sample/appsettings.json`, under `ApiClientCred
         "ClientSecret": "example-client-secret"
 ```
 
-- The `Address` field should match the region you picked when creating your organization. Find the root address for your region [here](https://platform.docs.microblink.com/api/#regions). Don't forget to append `/agent`!
+- The `Address` field should match the region you picked when creating your organization. Find the root address for your region [here](https://platform.docs.microblink.com/api/#regions). Don't forget to append `/agent`! For example:
+  - `https://api.us-east.platform.microblink.com/agent/`
+  - `https://api.br.platform.microblink.com/agent/`
 - The `ClientId` and `ClientSecret` values should match the values you got when you created API credentials.
 
 ### CORS configuration
