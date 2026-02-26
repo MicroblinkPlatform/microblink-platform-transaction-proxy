@@ -36,7 +36,7 @@ Configure the proxy in `src/Proxy.Sample/appsettings.json`, under `ApiClientCred
 
 - The `Address` field should match the region you picked when creating your organization. Find the root address for your region [here](https://platform.docs.microblink.com/api/#regions). Don't forget to append `/agent`! For example:
   - `https://api.us-east.platform.microblink.com/agent/`
-  - `https://api.br.platform.microblink.com/agent/`
+  - `https://api.eu.platform.microblink.com/agent/`
 - The `ClientId` and `ClientSecret` values should match the values you got when you created API credentials.
 
 ### CORS configuration
@@ -86,6 +86,18 @@ podman run --publish 8081:8080 transaction-proxy
 ```
 
 This makes the container available on localhost:8081 and ready to start proxying SDK requests.
+
+## Endpoints
+
+The proxy exposes the following endpoints, each forwarding to the corresponding Agent API route:
+
+| Method | Proxy route | Agent API route |
+|--------|-------------|-----------------|
+| `POST` | `/transaction` | `api/v1/transaction` |
+| `GET`  | `/initialize/{workflowId}/info` | `api/v1/initialize/{workflowId}/info` |
+| `POST` | `/initialize/{workflowId}/cancel` | `api/v1/initialize/{workflowId}/cancel` |
+
+For full details on request/response shapes, see the [Agent API documentation](https://platform.docs.microblink.com/api) or the OpenAPI schema at `https://api.us-east.platform.microblink.com/agent/api/v1/schema.json` (replace `us-east` with your region).
 
 ## Testing the proxy
 
