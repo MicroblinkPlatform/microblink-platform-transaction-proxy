@@ -29,11 +29,11 @@ public static class ApiEndpoints
 
     private static void MapTransaction(this WebApplication app)
     {
-        app.MapPost("/transaction", async (IAgentService proxy, HttpRequest request, CancellationToken ct) =>
+        app.MapPost("/transaction", async (IAgentService agentApiService, HttpRequest request, CancellationToken ct) =>
         {
             try
             {
-                var response = await proxy.ProcessRequest("api/v1/transaction", request, ct);
+                var response = await agentApiService.ProcessRequest("api/v1/transaction", request, ct);
                 return await ForwardResponse(response, ct);
             }
             catch (Exception ex)
@@ -48,11 +48,11 @@ public static class ApiEndpoints
 
     private static void MapInitializeInfo(this WebApplication app)
     {
-        app.MapGet("/initialize/{workflowId}/info", async (string workflowId, IAgentService proxy, HttpRequest request, CancellationToken ct) =>
+        app.MapGet("/initialize/{workflowId}/info", async (string workflowId, IAgentService agentApiService, HttpRequest request, CancellationToken ct) =>
         {
             try
             {
-                var response = await proxy.ProcessRequest($"api/v1/initialize/{workflowId}/info", request, ct);
+                var response = await agentApiService.ProcessRequest($"api/v1/initialize/{workflowId}/info", request, ct);
                 return await ForwardResponse(response, ct);
             }
             catch (Exception ex)
@@ -67,11 +67,11 @@ public static class ApiEndpoints
 
     private static void MapInitializeCancel(this WebApplication app)
     {
-        app.MapPost("/initialize/{workflowId}/cancel", async (string workflowId, IAgentService proxy, HttpRequest request, CancellationToken ct) =>
+        app.MapPost("/initialize/{workflowId}/cancel", async (string workflowId, IAgentService agentApiService, HttpRequest request, CancellationToken ct) =>
         {
             try
             {
-                var response = await proxy.ProcessRequest($"api/v1/initialize/{workflowId}/cancel", request, ct);
+                var response = await agentApiService.ProcessRequest($"api/v1/initialize/{workflowId}/cancel", request, ct);
                 return await ForwardResponse(response, ct);
             }
             catch (Exception ex)

@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityModel.Client;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -16,10 +15,12 @@ public class AuthService : IAuthService
     private readonly IHttpClientFactory _clientFactory;
     private readonly ILogger<AuthService> _logger;
     private readonly ApiClientCredentials _options;
+    private readonly string _authority;
 
     const string IdHttpClientName = "TokenManagerClient:Idp";
     const string Audience = "idv-api";
-    const string Authority = "https://account.platform.microblink.com";
+    const string UsAuthority = "https://account.platform.microblink.com"; 
+    const string EuAuthority = "https://account.platform.eu.microblink.com";
 
     private static readonly ConcurrentDictionary<string, IDiscoveryCache> _discoveryCaches = [];
 
@@ -27,18 +28,18 @@ public class AuthService : IAuthService
     public AuthService(
         ILogger<AuthService> logger,
         IOptions<ApiClientCredentials> options,
-        IHttpClientFactory clientFactory,
-        IDistributedCache? tokenCache
-        )
+        IHttpClientFactory clientFactory)
     {
         _logger = logger;
         _options = options.Value;
         _clientFactory = clientFactory;
+
+        _authority = (_options.Address!.Host?.Contains("api.eu.platform.microblink.com", StringComparison.OrdinalIgnoreCase) ?? false)
+           ? EuAuthority
+           : UsAuthority;
     }
 
     public Uri Address => _options.Address;
-    public string ProxyAuthority => Authority;
-
 
     public async Task<SecurityToken> GetAccessToken(CancellationToken ct)
     {
@@ -106,10 +107,10 @@ public class AuthService : IAuthService
     {
         get
         {
-            if (!_discoveryCaches.TryGetValue(Authority, out var cache))
+            if (!_discoveryCaches.TryGetValue(_authority, out var cache))
             {
-                cache = new DiscoveryCache(ProxyAuthority, _clientFactory.CreateClient);
-                _discoveryCaches.TryAdd(Authority, cache);
+                cache = new DiscoveryCache(_authority, _clientFactory.CreateClient);
+                _discoveryCaches.TryAdd(_authority, cache);
             }
             return cache;
         }
