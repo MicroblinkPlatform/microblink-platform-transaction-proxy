@@ -34,9 +34,9 @@ public class AuthService : IAuthService
         _options = options.Value;
         _clientFactory = clientFactory;
 
-        _authority = string.Equals(_options.Address.Host, "api.eu.platform.microblink.com", StringComparison.OrdinalIgnoreCase)
-            ? EuAuthority
-            : UsAuthority;
+        _authority = (_options.Address!.Host?.Contains("api.eu.platform.microblink.com", StringComparison.OrdinalIgnoreCase) ?? false)
+           ? EuAuthority
+           : UsAuthority;
     }
 
     public Uri Address => _options.Address;
