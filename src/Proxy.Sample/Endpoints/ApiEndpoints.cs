@@ -91,7 +91,6 @@ public static class ApiEndpoints
     {
         var content = await response.Content.ReadAsStreamAsync(ct);
         var contentType = response.Content.Headers.ContentType?.ToString() ?? "application/json";
-
         return Results.Stream(content, contentType);
     }
 }

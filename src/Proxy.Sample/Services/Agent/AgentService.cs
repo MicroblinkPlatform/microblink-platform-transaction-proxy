@@ -1,45 +1,47 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace Microblink.Platform.Proxy.Sample;
 
 public class AgentService : IAgentService
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IAuthService _authProxy;
+    private ApiClientCredentials _apiClientCredentials;
 
-    public AgentService(IHttpClientFactory httpClientFactory, IAuthService authProxy)
+    public AgentService(IHttpClientFactory httpClientFactory, IOptions<ApiClientCredentials> options)
     {
         _httpClientFactory = httpClientFactory;
-        _authProxy = authProxy;
+        _apiClientCredentials = options.Value;
     }
 
     public async Task<HttpResponseMessage> ProcessRequest(string url, HttpRequest request, CancellationToken ct)
     {
-        var token = await _authProxy.GetAccessToken(ct);
-
         var client = _httpClientFactory.CreateClient();
-        client.BaseAddress = _authProxy.Address;
+        client.BaseAddress = _apiClientCredentials.Address;
 
         // Build the outgoing request
-        using var requestMessage = new HttpRequestMessage(new HttpMethod(request.Method), _authProxy.Address.AbsoluteUri +  url);
+        using var requestMessage = new HttpRequestMessage(new HttpMethod(request.Method),
+            _apiClientCredentials.Address.AbsoluteUri + url);
 
         // Set our authorization
-        requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.AccessToken);
+        requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic",
+            Convert.ToBase64String(
+                Encoding.UTF8.GetBytes($"{_apiClientCredentials.ClientId}:{_apiClientCredentials.ClientSecret}")));
 
         // Add body content for methods that support it
         if (IsMutation(request))
         {
             requestMessage.Content = new StreamContent(request.Body);
-
             ForwardMutationHeaders(request, requestMessage);
         }
 
-        var response =  await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, ct);
+        var response = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, ct);
 
         return response;
     }
@@ -52,7 +54,7 @@ public class AgentService : IAgentService
 
     private static void ForwardMutationHeaders(HttpRequest request, HttpRequestMessage requestMessage)
     {
-        if (requestMessage == null || requestMessage.Content == null)
+        if (requestMessage.Content == null)
             return;
 
         // Forward content-specific headers

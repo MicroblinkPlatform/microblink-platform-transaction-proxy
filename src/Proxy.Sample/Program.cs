@@ -26,9 +26,7 @@ public class Program
             .ValidateOnStart();
 
         builder.Services.AddSingleton<IValidateOptions<ApiClientCredentials>, ApiClientCredentials>();
-
-        builder.Services.AddTransient<IAgentService,AgentService>();
-        builder.Services.AddTransient<IAuthService, AuthService>();
+        builder.Services.AddTransient<IAgentService, AgentService>();
 
         var app = builder.Build();
 
