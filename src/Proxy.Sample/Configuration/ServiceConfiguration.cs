@@ -30,7 +30,6 @@ internal static class ServiceConfiguration
             logging.CombineLogs = true;
         });
 
-
         builder.Services.AddHttpClient();
         builder.Services.AddMemoryCache();
         builder.Services.AddDistributedMemoryCache();
@@ -55,7 +54,8 @@ internal static class ServiceConfiguration
             {
                 ctx.ProblemDetails.Type = "https://httpstatuses.com/" + ctx.HttpContext.Response.StatusCode;
                 ctx.ProblemDetails.Extensions.Remove("traceId");
-                ctx.ProblemDetails.Extensions.Add("traceId", Activity.Current != null ? Activity.Current.TraceId.ToString() : ctx.HttpContext.TraceIdentifier);
+                ctx.ProblemDetails.Extensions.Add("traceId",
+                    Activity.Current != null ? Activity.Current.TraceId.ToString() : ctx.HttpContext.TraceIdentifier);
             };
         });
 
@@ -67,7 +67,6 @@ internal static class ServiceConfiguration
 
     public static WebApplicationBuilder UseIdvHost(this WebApplicationBuilder builder)
     {
-
         builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
             serverOptions.AddServerHeader = false;

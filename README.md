@@ -4,8 +4,24 @@
 
 # Microblink Platform transaction proxy
 
-This repository contains a lightweight .NET 9 proxy service packaged as an OCI-compliant container. 
+## 📦 Release Notes
 
+### v2.0.0
+
+* Added support for basic authentication with the Microblink Platform.
+* Introduced support for the new `ClientId` format (`sa_...` prefix).
+* Only `ClientId` values prefixed with `sa_...` are supported in this version.
+* Existing (older) `ClientId` values remain supported in **v1.0.0**.
+
+> **Important:** If you are using older API keys, we recommend generating new API keys and upgrading to the latest version of the proxy.
+
+### v1.0.0
+
+* Initial example implementation of a proxy using bearer token authentication with the Microblink Platform.
+
+---
+
+This repository contains a lightweight .NET 9 proxy service packaged as an OCI-compliant container. 
 This README covers local testing and development, and doesn't include deployment to external hosts.
 
 **Note**: This proxy service is for demonstration purposes only and should not be used in production environments.
@@ -54,7 +70,6 @@ So that the final portion of Program.cs looks like this:
 
 ```cs
         builder.Services.AddTransient<IAgentService,AgentService>();
-        builder.Services.AddTransient<IAuthService, AuthService>();
         builder.Services.AddCors();
         var app = builder.Build();
 
