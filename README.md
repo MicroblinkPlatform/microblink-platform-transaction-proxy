@@ -6,7 +6,7 @@
 
 ## 📦 Release Notes
 
-### v1.1.0
+### v2.0.0
 
 * Added support for basic authentication with the Microblink Platform.
 * Introduced support for the new `ClientId` format (`sa_...` prefix).
